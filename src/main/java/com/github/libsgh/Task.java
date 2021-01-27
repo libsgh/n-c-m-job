@@ -15,6 +15,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -28,6 +29,12 @@ public class Task {
 	
 	@Value("${api_url}")
 	private String apiUrl;
+	
+	@Scheduled(cron = "0 0/5 * * * ?")
+	public void kepp() {
+		HttpUtil.get(apiUrl);
+		HttpUtil.get("https://n-c-m-job.herokuapp.com");
+	}
 	
 	@Scheduled(cron = "0 0/30 * * * ?")
 	public void dailyTask() throws SQLException {
