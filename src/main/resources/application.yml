@@ -1,0 +1,17 @@
+spring:
+  freemarker:
+    charset: UTF-8
+    suffix: .html
+    content-type: text/html
+    enabled: true
+    cache: false
+    template-loader-path: classpath:/templates/
+    request-context-attribute: req
+  mvc:
+    servlet:
+      load-on-startup: 1
+  task:
+    scheduling:
+      pool:
+        size: 20
+api_url: https://h-ncm-api.herokuapp.com
