@@ -48,14 +48,14 @@ public class AsyncService {
 				jo.getStr("cookie");
 				try {
 					Entity record = getUserInfo(jo.getStr("cookie"));
-					Entity tmp = Db.use(ds).queryOne("select * from music_user where \"userId\"=?", record.getStr("userId"));
+					Entity tmp = Db.use(ds).queryOne("select * from music_user where userid=?", record.getStr("userid"));
 					if(tmp != null && !tmp.isEmpty()) {
 						//仅用于登录
 					}else {
 						Db.use(ds).insert(record);
 					}
-					jo.set("userId", record.getStr("userId"));
-					Constants.loginCache.put(sid, record.getStr("userId"));
+					jo.set("userid", record.getStr("userid"));
+					Constants.loginCache.put(sid, record.getStr("userid"));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
