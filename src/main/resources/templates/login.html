@@ -33,7 +33,7 @@
 						<div class="mdui-text-center">
 							<h4 class="mdui-text-center">使用<a href="https://music.163.com/download">网易云音乐APP</a>扫描二维码登录</h4>
 							<input type="hidden" id="sid" value="${sid}">
-							<input type="hidden" id="g" value="${g}">
+							<input type="hidden" id="g" value="${g!''}">
 							<input type="hidden" id="unikey">
 							<img id="qrCode" src="" />
 							<button class="mdui-btn mdui-color-indigo mdui-ripple mdui-text-center mdui-center" type="button" onclick="showQr($('#sid').val(),$('#unikey').val())">点击刷新</button>
