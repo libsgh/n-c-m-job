@@ -77,6 +77,7 @@ public class Task {
 					entity.set("dailycount", dailycount);
 					entity.set("linstencount", entity.getInt("linstencount")+dailycount);
 				}
+				HttpRequest.get(apiUrl + "/yunbei/sign?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
 				body = HttpRequest.get(apiUrl + "/daily_signin?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
 				if(JSONUtil.isJson(body) && JSONUtil.parseObj(body).getInt("code") == 200) {
 					//签到成功

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.druid.pool.DruidDataSource;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.http.HttpRequest;
@@ -18,7 +19,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 @Service
-@Async
 public class AsyncService {
 	
 	@Value("${api_url}")
@@ -27,24 +27,26 @@ public class AsyncService {
 	@Autowired
 	private DruidDataSource ds;
 	
-	public void checkQr(String unikey, String sid) {
+	@Async
+	public void checkQr(String unikey, String sid, String g) {
 		Long timestamp = System.currentTimeMillis();
 		if(Constants.timedCache.containsKey(unikey)) {
 			String result = HttpUtil.get(apiUrl + "/login/qr/check?key=" + unikey+"&timestamp="+timestamp);
 			JSONObject jo = JSONUtil.parseObj(result);
 			Integer status = JSONUtil.parseObj(result).getByPath("$.code", Integer.class);
+			System.out.println(status);
 			//800为二维码过期,801为等待扫码,802为待确认,803为授权登录成功(803状态码下会返回cookies)
 			if(status.intValue() == 801) {
 				//等待扫码
-				this.checkQr(unikey, sid);
+				this.checkQr(unikey, sid, g);
 			}else if(status.intValue() == 802) {
 				//待确认
-				this.checkQr(unikey, sid);
+				this.checkQr(unikey, sid, g);
 			}else if(status.intValue() == 803) {
 				//授权登录成功
 				jo.getStr("cookie");
 				try {
-					Entity record = getUserInfo(jo.getStr("cookie"));
+					Entity record = getUserInfo(jo.getStr("cookie"), g);
 					Entity tmp = Db.use(ds).queryOne("select * from music_user where userid=?", record.getStr("userid"));
 					if(tmp != null && !tmp.isEmpty()) {
 						//仅用于登录
@@ -69,7 +71,7 @@ public class AsyncService {
 			}
 		}
 	}
-	public Entity getUserInfo(String cookie) {
+	public Entity getUserInfo(String cookie, String g) {
 		String guid = IdUtil.fastSimpleUUID();
 		Entity record = Entity.create("music_user")
 						.set("guid", guid);
@@ -100,12 +102,16 @@ public class AsyncService {
 		record.set("createtime", System.currentTimeMillis());
 		record.set("cookiestatus", 1);
 		record.set("cookie", cookie);
-		record.set("groupid", guid);
+		if(StrUtil.isNotBlank(g)) {
+			record.set("groupid", g);
+		}else{
+			record.set("groupid", guid);
+		}
 		record.set("signature", signature);
 		record.set("linstencount", 0);
 		record.set("dailycount", 0);
 		record.set("dailysign", 0);
-		body =  HttpRequest.get(apiUrl + "/user/detail?uid=298158928").cookie(cookie).execute().body();
+		body =  HttpRequest.get(apiUrl + "/user/detail?uid="+userId).cookie(cookie).execute().body();
 		jo = JSONUtil.parseObj(body);
 		Integer eventCount = jo.getByPath("$.profile.eventCount", Integer.class);
 		Integer followeds = jo.getByPath("$.profile.followeds", Integer.class);

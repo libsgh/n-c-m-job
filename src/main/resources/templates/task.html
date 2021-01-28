@@ -21,7 +21,19 @@
 ></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/libsgh/n-c-m-job@master/src/main/resources/static/material/index.441d941d.css">
 </head>
-<body class="mdui-drawer-body-left mdui-loaded">
+<body class="mdui-drawer-body-left">
+<div class="mdui-appbar-with-toolbar mg-app">
+	<div class="mc-appbar mdui-appbar mdui-appbar-fixed">
+	  <div class="toolbar mdui-toolbar">
+	    <button class="drawer mdui-btn mdui-btn-icon mdui-ripple" mdui-drawer="{target: '#main-drawer', swipe: true}">
+	      <i class="mdui-icon material-icons">menu</i>
+	    </button>
+	    <a class="headline" href="/">网易云任务</a>
+	    <div class="title">${record.bean.uname}</div>
+	    <div class="mdui-toolbar-spacer"></div>
+	    <div class="login mdui-btn mdui-btn-dense" onclick="location.href='${ctx}/logout'">退出登录</div>
+	  </div>
+	</div>
 	<div class="mc-drawer mdui-drawer" id="main-drawer">
 		<ul class="mdui-list">
 			<#list record.mus as mu>
@@ -34,8 +46,8 @@
 			</#list>
 		</ul>
 		<div class="copyright">
-			<p>© 2021 n-c-m-job</p>
-			<p>Powered by <a href="https://github.com/Binaryify/NeteaseCloudMusicApi" target="_blank">Binaryify</a> &amp; Libs</p>
+			<p>© 2021 网易云任务</p>
+			<p>Powered by Libs</p>
 		</div>
 	</div>
 	<div id="page-user" class="mdui-container">
@@ -85,35 +97,39 @@
 			</div>
 			<div id="level-tab" class="mdui-p-a-2">
 				<div class="mdui-typo mdui-m-l-5 mdui-m-b-5">
-					<p><strong>累计听歌： </strong><span class="mdui-text-color-red" style="font-size: 28px">${record.bean.linstencount}</span></p>
-					<p><strong>当前等级： </strong><span class="mdui-text-color-red" style="font-size: 28px">LV.${record.bean.level}</span></p>
-					<p><strong>距离下一等级： </strong><span class="mdui-text-color-red" style="font-size: 28px">LV.${record.bean.level}</span></p>
-					<p><strong>还需登录</strong></p>
-					<div class="mdui-progress mdui-m-b-2" style="width: 80%">
-					  <div class="mdui-progress-determinate" style="width: 30%;"></div>
-					</div>
-					<p><strong>还需听歌</strong></p>
-					<div class="mdui-progress mdui-m-b-2" style="width: 80%">
-					  <div class="mdui-progress-determinate" style="width: 30%;"></div>
-					</div>
+					<p><strong>累计听歌： </strong><span class="mdui-text-color-red" style="font-size: 25px"><#if record.bean.level lt 10>${record.bean.linstencount}<#else>已达满级，无需刷歌</#if></span></p>
+					<p><strong>当前等级： </strong><span class="mdui-text-color-red" style="font-size: 25px">LV.${record.bean.level}</span></p>
+					<#if record.bean.level lt 10>
+						<p><strong>距离下一等级： </strong><span class="mdui-text-color-red" style="font-size: 25px">LV.${record.bean.level}</span></p>
+						<p><strong>还需登录</strong></p>
+						<div class="mdui-progress mdui-m-b-2" style="width: 80%">
+						  <div class="mdui-progress-determinate" style="width: 30%;"></div>
+						</div>
+						<p><strong>还需听歌</strong></p>
+						<div class="mdui-progress mdui-m-b-2" style="width: 80%">
+						  <div class="mdui-progress-determinate" style="width: 30%;"></div>
+						</div>
+					</#if>
 				</div>
 			</div>
 			<div id="task-tab" class="mdui-p-a-2">
 				<div class="mdui-typo mdui-m-l-5 mdui-m-b-5">
-					<p><strong>今日听歌： </strong><span class="mdui-text-color-deep-purple-900" style="font-size: 28px">${record.bean.dailycount}</span></p>
+					<p><strong>今日听歌： </strong><span class="mdui-text-color-deep-purple-900" style="font-size: 25px">${record.bean.dailycount}</span></p>
 					<p>
 						<strong>签到： </strong>
-						<span class="mdui-text-color-deep-purple-900" style="font-size: 28px">
+						<span class="mdui-text-color-deep-purple-900" style="font-size: 25px">
 							经验 + ${record.bean.dailysign}
 						</span>
 					</p>
-					<p><strong>完成时间： </strong><span class="mdui-text-color-deep-purple-900" style="font-size: 28px"><#if record.bean.finishTime??>${record.bean.finishTime?number?number_to_datetime}<#else>-</#if></span></p>
+					<p><strong>完成时间： </strong><span class="mdui-text-color-deep-purple-900" style="font-size: 25px"><#if record.bean.finishtime??>${record.bean.finishtime?c?number?number_to_datetime}<#else>-</#if></span></p>
 				</div>
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript">
-	var $ = mdui.$;
-	</script>
+</div>
+<button class="mdui-fab mdui-fab-fixed mdui-fab-extended mdui-ripple mdui-color-theme" onclick="location.href='${ctx}/logout?g=${record.bean.groupid}'"><i class="mdui-icon material-icons">add</i><span>绑定</span></button>
+<script type="text/javascript">
+var $ = mdui.$;
+</script>
 </body>
 </html>

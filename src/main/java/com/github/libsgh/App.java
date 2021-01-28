@@ -18,6 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -26,6 +29,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.DbUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.log.level.Level;
 
 @SpringBootApplication
@@ -68,7 +72,7 @@ public class App {
 	}
 	
 	@GetMapping("/login")
-	public String login(Model model, HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public String login(Model model, HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "g", required = false)String g) throws SQLException {
 		String sid = Util.getSidFromCookie(request);
 		if(StrUtil.isBlank(sid)) {
 			if(StrUtil.isNotBlank(request.getParameter("sid"))) {
@@ -85,15 +89,46 @@ public class App {
 			response.addCookie(sidCookie);
 			return "redirect:/task/"+userId;
 		}
-		model.addAttribute("qrimg", mainService.getQr(sid));
+		//model.addAttribute("qrimg", mainService.getQr(sid));
 		model.addAttribute("sid", sid);
+		model.addAttribute("g", g);
 		return "login";
+	}
+	
+	@GetMapping("/api/qr")
+	@ResponseBody
+	public JSONObject getQr(String sid, Integer status, String unikey, @RequestParam(name = "g", required = false)String g) throws SQLException {
+		JSONObject jo = JSONUtil.createObj();
+		jo.set("sid", sid);
+		if(status == 1) {
+			//获取二维码
+			jo = mainService.getQr(sid, g);
+		}else{
+			//使二维码失效
+			Constants.timedCache.remove(unikey);
+		}
+		return jo;
+	}
+	@PostMapping("/api/pwdLogin")
+	@ResponseBody
+	public JSONObject pwdLogin(String sid, String loginname, String pwd, @RequestParam(name = "g", required = false)String g) throws SQLException {
+		return mainService.pwdLogin(sid, loginname, pwd, g);
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest request, @RequestParam(name = "g", required = false)String g) {
+		String sid = Util.getSidFromCookie(request);
+		Constants.loginCache.remove(sid);
+		if(StrUtil.isNotBlank(g)) {
+			return "redirect:/login?g="+g;
+		}else {
+			return "redirect:/login";
+		}
 	}
 	
 	@GetMapping("/task/{userId}")
 	public String task(Model model, HttpServletRequest request, @PathVariable("userId") String userId) throws SQLException {
 		String sid = Util.getSidFromCookie(request);
-		System.out.println(sid);
 		if(!Constants.loginCache.containsKey(sid)) { 
 			//已经登录，重定向到首页
 			return "redirect:/login";
