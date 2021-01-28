@@ -86,6 +86,8 @@ public class App {
 			Cookie sidCookie = new Cookie("sid", sid);
 			sidCookie.setMaxAge(5 * 24 * 60 * 60);
 			sidCookie.setPath(request.getContextPath());
+			sidCookie.setHttpOnly(true);
+			sidCookie.setDomain("n-c-m-job.herokuapp.com");
 			response.addCookie(sidCookie);
 			return "redirect:/task/"+userId;
 		}
