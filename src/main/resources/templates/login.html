@@ -75,7 +75,7 @@
 			$.ajax({
 			  method: 'GET',
 			  url: '${ctx}/api/qr',
-			  data: "g="+g+"status="+status+"&sid="+sid+"&unikey="+unikey,
+			  data: "g="+g+"&status="+status+"&sid="+sid+"&unikey="+unikey,
 			  success: function (data) {
 				var d = JSON.parse(data);
 				$("#sid").val(d.sid);
