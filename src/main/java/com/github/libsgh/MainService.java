@@ -37,6 +37,7 @@ public class MainService {
 				result = HttpUtil.get(apiUrl + "/login/qr/create?key="+unikey+"&qrimg=null&timestamp="+timestamp);
 				Constants.timedCache.put(unikey, sid);
 				asyncService.checkQr(unikey, sid);
+				//Constants.loginCache.put(sid, "298158928");
 				return JSONUtil.parseObj(result).getByPath("$.data.qrimg", String.class);
 			}
 		}

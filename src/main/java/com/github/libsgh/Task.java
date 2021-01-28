@@ -49,7 +49,7 @@ public class Task {
 		for (Entity entity : list) {
 			//检测登录状态
 			String body = HttpRequest.get(apiUrl + "/login/status").cookie(entity.getStr("cookie")).execute().body();
-			if(JSONUtil.parseObj(body).getInt("code") == 200) {
+			if(JSONUtil.parseObj(body).getByPath("$.data.code", int.class) == 200) {
 				//cookie有效
 				if (entity.getInt("level") < 10) {
 					//已经达到满级的不需要听歌啦
@@ -91,6 +91,7 @@ public class Task {
 			}else{
 				entity.set("cookiestatus", 0);
 			}
+			entity.set("finishtime", DateUtil.currentSeconds());
 			Db.use(ds).update(entity, Entity.create("music_user").set("guid", entity.getStr("guid")));
 		}
 	}

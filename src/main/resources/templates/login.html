@@ -55,14 +55,13 @@
 		if(typeof(WebSocket) == "undefined") {  
 			console.error("您的浏览器不支持WebSocket");  
 		}else{  
-			socket = new WebSocket("wss://"+window.location.host+"/websocket/"+$("#sid").val()); 
+			socket = new WebSocket("ws://"+window.location.host+"/websocket/"+$("#sid").val()); 
 			socket.onopen = function() {  
 			};  
 			socket.onmessage = function(msg) {
-				console.log(msg);
 				var d = eval('(' + msg.data + ')');
 				if(d.code == 803){
-					location.href = "${ctx}/task/"+d.userId;
+					location.href = "${ctx}/login?sid="+$("#sid").val();
 				}
 			};  
 			socket.onclose = function() {  

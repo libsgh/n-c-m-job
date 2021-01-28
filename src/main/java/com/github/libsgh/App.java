@@ -2,7 +2,9 @@ package com.github.libsgh;
 
 import java.sql.SQLException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,15 +68,21 @@ public class App {
 	}
 	
 	@GetMapping("/login")
-	public String login(Model model, HttpServletRequest request) throws SQLException {
-		String sid = (String) request.getSession().getAttribute("sid");
+	public String login(Model model, HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		String sid = Util.getSidFromCookie(request);
 		if(StrUtil.isBlank(sid)) {
-			sid = IdUtil.fastSimpleUUID();
-			request.getSession().setAttribute("sid", sid);
+			if(StrUtil.isNotBlank(request.getParameter("sid"))) {
+				sid = IdUtil.fastSimpleUUID();
+			}else {
+				sid = request.getParameter("sid");
+			}
 		}
 		if(Constants.loginCache.containsKey(sid)) {
-			//已经登录，重定向到首页
 			String userId = Constants.loginCache.get(sid);
+			Cookie sidCookie = new Cookie("sid", sid);
+			sidCookie.setMaxAge(5 * 24 * 60 * 60);
+			sidCookie.setPath(request.getContextPath());
+			response.addCookie(sidCookie);
 			return "redirect:/task/"+userId;
 		}
 		model.addAttribute("qrimg", mainService.getQr(sid));
@@ -84,17 +92,18 @@ public class App {
 	
 	@GetMapping("/task/{userId}")
 	public String task(Model model, HttpServletRequest request, @PathVariable("userId") String userId) throws SQLException {
-		String sid = (String) request.getSession().getAttribute("sid");
-		if(!Constants.loginCache.containsKey(sid)) {
+		String sid = Util.getSidFromCookie(request);
+		System.out.println(sid);
+		if(!Constants.loginCache.containsKey(sid)) { 
 			//已经登录，重定向到首页
 			return "redirect:/login";
 		}else{
 			JSONObject record = mainService.getByUserId(userId);
-			if(record.isEmpty()) {
+			if(record.isEmpty()) { 
 				return "redirect:/login";
-			}else {
-				model.addAttribute("record", record);
-			}
+			}else{
+				model.addAttribute("record", record); 
+			} 
 		}
 		return "task";
 	}

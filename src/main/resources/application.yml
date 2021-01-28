@@ -15,3 +15,7 @@ spring:
       pool:
         size: 20
 api_url: https://h-ncm-api.herokuapp.com
+server:
+  servlet:
+    session:
+      timeout: PT120H
