@@ -39,7 +39,7 @@ public class MainService {
 				String unikey  = jo.getByPath("$.data.unikey", String.class);
 				result = HttpUtil.get(apiUrl + "/login/qr/create?key="+unikey+"&qrimg=null&timestamp="+timestamp);
 				Constants.timedCache.put(unikey, sid);
-				asyncService.checkQr(unikey, sid);
+				asyncService.checkQr(unikey, sid, g);
 				String qrimg = JSONUtil.parseObj(result).getByPath("$.data.qrimg", String.class);
 				j.set("qrimg", qrimg);
 				j.set("unikey", unikey);
