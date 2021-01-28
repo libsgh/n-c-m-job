@@ -76,9 +76,9 @@ public class App {
 		String sid = Util.getSidFromCookie(request);
 		if(StrUtil.isBlank(sid)) {
 			if(StrUtil.isNotBlank(request.getParameter("sid"))) {
-				sid = IdUtil.fastSimpleUUID();
-			}else {
 				sid = request.getParameter("sid");
+			}else {
+				sid = IdUtil.fastSimpleUUID();
 			}
 		}
 		if(Constants.loginCache.containsKey(sid)) {
