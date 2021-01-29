@@ -70,7 +70,7 @@
                                     </div>
                                     <!-- Buttons -->
                                     <div class="hero-btns">
-                                                                                <a href="/login" class="btn">
+                                                                                <a href="javascript:void(0)" class="btn" onclick="jumpLogin()">
                                             <span>立即体验</span>
                                         </a>
                                                                             </div>                               
@@ -215,5 +215,16 @@
     <script src="https://cdn.jsdelivr.net/gh/libsgh/n-c-m-job@master/src/main/resources/static/index/js/owl.carousel.min.js?rev=1.0"></script>
     <!--  Custom JS  -->
     <script src="https://cdn.jsdelivr.net/gh/libsgh/n-c-m-job@master/src/main/resources/static/index/js/roiton.js?rev=1.0"></script>
+    <script type="text/javascript">
+    function jumpLogin(){
+    	var sid = localStorage.getItem('sid');
+    	console.log(sid)
+    	if(sid){
+    		location.href = "/login?sid="+sid;
+    	}else{
+    		location.href = "/login";
+    	}
+    }
+    </script>
     </body>
 </html>

@@ -72,8 +72,9 @@ public class App {
 	}
 	
 	@GetMapping("/login")
-	public String login(Model model, HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "g", required = false)String g) throws SQLException {
-		String sid = Util.getSidFromCookie(request);
+	public String login(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(name = "g", required = false)String g,
+			@RequestParam(name = "sid", required = false)String sid) throws SQLException {
 		if(StrUtil.isBlank(sid)) {
 			if(StrUtil.isNotBlank(request.getParameter("sid"))) {
 				sid = request.getParameter("sid");
@@ -89,7 +90,7 @@ public class App {
 			sidCookie.setHttpOnly(true);
 			sidCookie.setDomain("n-c-m-job.herokuapp.com");
 			response.addCookie(sidCookie);
-			return "redirect:/task/"+userId;
+			return "redirect:/task/"+userId+"?sid="+sid;
 		}
 		//model.addAttribute("qrimg", mainService.getQr(sid));
 		model.addAttribute("sid", sid);
@@ -118,8 +119,8 @@ public class App {
 	}
 	
 	@GetMapping("/logout")
-	public String logout(HttpServletRequest request, @RequestParam(name = "g", required = false)String g) {
-		String sid = Util.getSidFromCookie(request);
+	public String logout(HttpServletRequest request, @RequestParam(name = "g", required = false)String g,
+			@RequestParam(name = "sid", required = false)String sid) {
 		Constants.loginCache.remove(sid);
 		if(StrUtil.isNotBlank(g)) {
 			return "redirect:/login?g="+g;
@@ -129,8 +130,9 @@ public class App {
 	}
 	
 	@GetMapping("/task/{userId}")
-	public String task(Model model, HttpServletRequest request, @PathVariable("userId") String userId) throws SQLException {
-		String sid = Util.getSidFromCookie(request);
+	public String task(Model model, HttpServletRequest request, @PathVariable("userId") String userId,
+			@RequestParam(name = "sid", required = false)String sid) throws SQLException {
+		//String sid = Util.getSidFromCookie(request);
 		if(!Constants.loginCache.containsKey(sid)) { 
 			//已经登录，重定向到首页
 			return "redirect:/login";

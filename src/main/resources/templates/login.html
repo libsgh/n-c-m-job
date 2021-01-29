@@ -127,7 +127,8 @@
 					  success: function (data) {
 						  var d = JSON.parse(data);
 						  if(d.code == 200){
-							  location.href = '${ctx}/task/'+d.userid;
+							  localStorage.setItem('sid', $("#sid").val());
+							  location.href = '${ctx}/task/'+d.userid+"?sid="+$("#sid").val();
 						  }else{
 							  if(d.msg){
 								  mdui.snackbar({
@@ -155,7 +156,7 @@
 			socket.onmessage = function(msg) {
 				var d = eval('(' + msg.data + ')');
 				if(d.code == 803){
-					setCookie("sid", $("#sid").val());
+					localStorage.setItem('sid', $("#sid").val());
 					location.href = "${ctx}/login?sid="+$("#sid").val();
 				}else if(d.code == 800){
 					mdui.snackbar({
