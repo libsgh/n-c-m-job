@@ -31,8 +31,8 @@ public class Task {
 	
 	@Scheduled(cron = "0 0/5 * * * ?")
 	public void kepp() {
-		HttpUtil.get(apiUrl);
-		//HttpUtil.get("https://n-c-m-job.herokuapp.com");
+		//HttpUtil.get(apiUrl);
+		HttpUtil.get("https://ncmjob.herokuapp.com");
 	}
 	
 	@Scheduled(cron = "0 0/30 * * * ?")
