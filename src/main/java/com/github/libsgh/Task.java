@@ -1,7 +1,6 @@
 package com.github.libsgh;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class Task {
 	@Scheduled(cron = "0 0/5 * * * ?")
 	public void kepp() {
 		HttpUtil.get(apiUrl);
-		HttpUtil.get("https://n-c-m-job.herokuapp.com");
+		//HttpUtil.get("https://n-c-m-job.herokuapp.com");
 	}
 	
 	@Scheduled(cron = "0 0/30 * * * ?")
@@ -77,8 +76,9 @@ public class Task {
 					entity.set("dailycount", dailycount);
 					entity.set("linstencount", entity.getInt("linstencount")+dailycount);
 				}
-				HttpRequest.get(apiUrl + "/yunbei/sign?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
+				String b = HttpRequest.get(apiUrl + "/yunbei/sign?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
 				body = HttpRequest.get(apiUrl + "/daily_signin?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
+				Log.get().info(b);
 				if(JSONUtil.isJson(body) && JSONUtil.parseObj(body).getInt("code") == 200) {
 					//签到成功
 					Integer point = JSONUtil.parseObj(body).getInt("point");
