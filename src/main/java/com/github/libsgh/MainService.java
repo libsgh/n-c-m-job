@@ -54,10 +54,10 @@ public class MainService {
 	public JSONObject getByUserId(String userId) {
 		JSONObject jo = JSONUtil.createObj();
 		try {
-			Entity record = Db.use(ds).queryOne("select * from music_user where userId=? limit 1", userId);
+			Entity record = Db.use(ds).queryOne("select * from music_user where userid=? limit 1", userId);
 			record.set("finishtime", record.getLong("finishtime")*1000);
 			if(record != null && !record.isEmpty()) {
-				List<Entity> list = Db.use(ds).query("select * from music_user where groupid=?", record.getStr("groupId"));
+				List<Entity> list = Db.use(ds).query("select * from music_user where groupid=?", record.getStr("groupid"));
 				return jo.set("bean", record).set("mus", list);
 			}
 		} catch (SQLException e) {
