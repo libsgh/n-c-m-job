@@ -76,19 +76,34 @@ public class Task {
 					entity.set("dailycount", dailycount);
 					entity.set("linstencount", entity.getInt("linstencount")+dailycount);
 				}
+				//云贝签到
 				String b = HttpRequest.get(apiUrl + "/yunbei/sign?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
-				body = HttpRequest.get(apiUrl + "/daily_signin?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
 				Log.get().info(b);
+				int point = 0;
+				//桌面签到
+				body = HttpRequest.get(apiUrl + "/daily_signin?type=1&timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
 				if(JSONUtil.isJson(body) && JSONUtil.parseObj(body).getInt("code") == 200) {
 					//签到成功
-					Integer point = JSONUtil.parseObj(body).getInt("point");
-					entity.set("dailysign", point);
+					point += JSONUtil.parseObj(body).getInt("point");
 				}else if(JSONUtil.isJson(body) && JSONUtil.parseObj(body).getInt("code") == -2){
 					Log.get().info("重复签到");
-					entity.set("dailysign", 3);
+					point += 2;
 				}else{
-					entity.set("dailysign", 0);
+					point += 0;
 				}
+				//移动端签到
+				body = HttpRequest.get(apiUrl + "/daily_signin?timestamp=" + System.currentTimeMillis()).cookie(entity.getStr("cookie")).execute().body();
+				if(JSONUtil.isJson(body) && JSONUtil.parseObj(body).getInt("code") == 200) {
+					//签到成功
+					point += JSONUtil.parseObj(body).getInt("point");
+				}else if(JSONUtil.isJson(body) && JSONUtil.parseObj(body).getInt("code") == -2){
+					Log.get().info("重复签到");
+					point += 3;
+				}else{
+					point += 0;
+				}
+				entity.set("dailysign", point);
+				entity.set("yunbei", 5+10);
 			}else{
 				entity.set("cookiestatus", 0);
 			}

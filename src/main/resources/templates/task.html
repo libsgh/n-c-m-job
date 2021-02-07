@@ -118,7 +118,13 @@
 					<p>
 						<strong>签到： </strong>
 						<span class="mdui-text-color-deep-purple-900" style="font-size: 25px">
-							经验 + ${record.bean.dailysign}
+							经验 + ${record.bean.dailysign}(移动+桌面)
+						</span>
+					</p>
+					<p>
+						<strong>云贝： </strong>
+						<span class="mdui-text-color-deep-purple-900" style="font-size: 25px">
+							+ ${record.bean.yunbei}
 						</span>
 					</p>
 					<p><strong>完成时间： </strong><span class="mdui-text-color-deep-purple-900" style="font-size: 25px"><#if record.bean.finishtime??>${record.bean.finishtime?c?number?number_to_datetime}<#else>-</#if></span></p>
