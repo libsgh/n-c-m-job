@@ -144,6 +144,7 @@ public class App {
 				model.addAttribute("record", record); 
 			} 
 		}
+		model.addAttribute("sid", sid); 
 		return "task";
 	}
 

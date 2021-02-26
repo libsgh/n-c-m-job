@@ -37,7 +37,7 @@
 	<div class="mc-drawer mdui-drawer" id="main-drawer">
 		<ul class="mdui-list">
 			<#list record.mus as mu>
-			  <li class="mdui-list-item mdui-ripple <#if mu.userid == record.bean.userid>mdui-list-item-active</#if>" onclick="javascript:location.href='${ctx}/task/${mu.userid}'">
+			  <li class="mdui-list-item mdui-ripple <#if mu.userid == record.bean.userid>mdui-list-item-active</#if>" onclick="javascript:location.href='${ctx}/task/${mu.userid}?sid=${sid}'">
 			    <div class="mdui-list-item-avatar"><img src="${mu.avatarurl}"/></div>
 			    <div class="mdui-list-item-content">
 			      <div class="mdui-list-item-title">${mu.uname}</div>
